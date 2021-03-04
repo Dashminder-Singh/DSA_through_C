@@ -8,95 +8,111 @@ struct BST
 	struct BST *right;
 };
 
-void deletion(struct BST **r, struct BST *ptr)
+void del_0(struct BST *ptr, struct BST *parptr, struct BST *root)
 {
-	struct BST *parptr;
-	parptr=*r;
-
-	while(parptr->left!=ptr)
+	if(parptr==NULL)
 	{
-		if(parptr->left==ptr)
-		{
-			break;
-		}
-		else
-			parptr=parptr->left;
-
-		if(parptr->right==ptr)
-		{
-			break;
-		}
-		else
-			parptr=parptr->right;
+		root=NULL;
 	}
-	
+	else if(ptr== parptr->left)
+	{
+		parptr->left=NULL;
+	}
+	else
+	{
+		parptr->right=NULL;
+	}
+	free(ptr);
+}
+
+void del_1(struct BST *ptr, struct BST *parptr, struct BST *root)
+{
+	if(parptr==NULL)
+	{
+		if(ptr->left!=NULL)
+			root=ptr->left;
+		else
+			root=ptr->right;
+	}
+	else if(ptr==parptr->left)
+	{
+		if(ptr->left!=NULL)
+			parptr->left=ptr->left;
+		else
+			parptr->left=ptr->right;
+	}
+	else
+	{
+		if(ptr->left!=NULL)
+			parptr->right=ptr->left;
+		else
+			parptr->right=ptr->right;
+	}
+	free(ptr);
+}
+void del_2(struct BST *ptr)
+{
+	struct BST *s, *ps;
+	s=ptr->right;
+	ps=ptr;
+
+	while(s->left!=NULL)
+	{
+		ps=s;
+		s=s->left;
+	}
+	ptr->item=s->item;
+	if(s==ps->left)
+		ps->left=s->right;
+	else
+		ps->right=s->right;
+	free(s);
+}
+
+void deletion(struct BST **r,int data)
+{
+	struct BST *ptr, *parptr;
 	if(*r==NULL)
 	{
 		printf("Underflow\n");
 	}
-	else if(ptr->left==NULL && ptr->right==NULL)
-	{
-		if(ptr==*r)
-		{
-			*r=NULL;
-		}
-		else if(ptr==parptr->left)
-		{
-			parptr->left=NULL;
-		}
-		else
-		{
-			parptr->right=NULL;
-		}
-		free(ptr);
-	}
-
-	else if(ptr->left==NULL || ptr->right==NULL)
-	{
-		if(ptr==*r)
-		{
-			if(ptr->left!=NULL)
-				*r=ptr->left;
-			else
-				*r=ptr->right;
-		}
-		else if(ptr==parptr->left)
-		{
-			if(ptr->left!=NULL)
-				parptr->left=ptr->left;
-			else
-				parptr->left=ptr->right;
-		}
-		else
-		{
-			if(ptr->left!=NULL)
-				parptr->right=ptr->left;
-			else
-				parptr->right=ptr->right;
-		}
-		free(ptr);
-	}
-
 	else
 	{
-		struct BST *s, *ps;
-		s=ptr->right;
-		ps=ptr;
-		while(s->left!=NULL)
+		ptr=*r;
+		parptr=NULL;
+
+		while(ptr->item!=data && ptr!=NULL)
 		{
-			ps=s;
-			s=s->left;
+			if(ptr->item>data)
+			{
+				parptr=ptr;
+				ptr=ptr->left;
+			}
+			else
+			{
+				parptr=ptr;
+				ptr=ptr->right;
+			}
 		}
-		ptr->item=s->item;
-		if(s==ps->left)
+		if(ptr==NULL)
 		{
-			ps->left=s->left;
+			printf("Not found\n");
 		}
 		else
 		{
-			ps->right=s->right;
+			if(ptr->left==NULL && ptr->right==NULL)
+			{
+				del_0(ptr,parptr,*r);
+			}
+			else if(ptr->left==NULL || ptr->right==NULL)
+			{
+				del_1(ptr,parptr, *r);
+			}
+			else
+			{
+				del_2(ptr);
+			}
 		}
-		free(s);
 	}
 }
 
@@ -145,15 +161,18 @@ void insert(struct BST **r, int data)
 	}
 }
 
-struct BST * find(struct BST **r, int data)
+void find(struct BST **r, int data)
 {
 	struct BST *t;
 	t=*r;
+	int flag=1;
 	while(t!=NULL)
 	{
 		if(t->item== data)
 		{
-			return t;
+			printf("%d is found\n",data);
+			flag=0;
+			break;
 		}
 		else if(t->item>data)
 		{
@@ -164,8 +183,8 @@ struct BST * find(struct BST **r, int data)
 			t=t->right;
 		}
 	}
-	printf("Not Found\n");
-	return NULL;
+	if(flag==1)
+		printf("Not found\n");
 }
 
 void postorder(struct BST *root)
@@ -226,10 +245,8 @@ int main()
 	inorder(root);
 	printf("\n");
 
-	struct BST *s1;
-	s1=find(&root,40);
-	
-	deletion(&root,s1);
+	deletion(&root,10);
+	deletion(&root,60);
 
 	printf("\nAfter deletion: ");
 	inorder(root);
