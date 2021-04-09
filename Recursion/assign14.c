@@ -15,6 +15,6 @@ void reverse(int n)
 
 int main()
 {
-	reverse(1234);
+	reverse(2);
 	return 0;
 }

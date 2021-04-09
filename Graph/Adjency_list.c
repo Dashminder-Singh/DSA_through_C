@@ -29,7 +29,7 @@ struct Graph *create(int v)
 	G->V=v;
 	G->adj=(struct node **)malloc(sizeof(struct node*) * (G->V));
 
-	for(int i=1; i<=v; i++)
+	for(int i=0; i<v; i++)
 	{
 		G->adj[i]=NULL;
 	}
@@ -40,18 +40,18 @@ void add_edge(struct Graph *G, int s, int d)
 {
 	struct node *n;
 	n=new_node(d);
-	n->next=G->adj[s];
-	G->adj[s]=n;
+	n->next=G->adj[s-1];
+	G->adj[s-1]=n;
 
 	n=new_node(s);
-	n->next=G->adj[d];
-	G->adj[d]=n;
+	n->next=G->adj[d-1];
+	G->adj[d-1]=n;
 }
 
 void print_list(struct Graph *G)
 {
 	struct node *t;
-	for(int i=1; i<=G->V; i++)
+	for(int i=0; i<G->V; i++)
 	{
 		t=G->adj[i];
 		printf("[%d] ", i);
