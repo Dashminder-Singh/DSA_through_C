@@ -84,14 +84,25 @@ int operators(char ch)
 	}
 }
 
+void reverse(char *str)
+{
+	int len, temp;
+	len=strlen(str);
+	for(int i=0; i<len/2; i++)
+	{
+		temp=str[i];
+		str[i]=str[len-i-1];
+		str[len-i-1]=temp;
+	}
+}
+
 char * infix_to_prefix(char * Q)
 {
 	char ch;
 	struct stack *s;
 	s=create(20);
 
-	strrev(Q);
-
+	reverse(Q);
 	char *P;
 	P=malloc(sizeof(char) * (strlen(Q)+1));
 
@@ -122,16 +133,13 @@ char * infix_to_prefix(char * Q)
 		}
 		else
 		{
-			if(preced(Q[i])> preced(s->arr[s->top]))
-			{
-				push(s,Q[i]);
-				i++;
-			}
-			else
+			while(s->top!=-1 && preced(Q[i])<= preced(s->arr[s->top]))
 			{
 				P[j]=pop(s);
 				j++;
 			}
+			push(s,Q[i]);
+			i++;
 		}
 	}
 
@@ -143,15 +151,15 @@ char * infix_to_prefix(char * Q)
 	if(s->top!=-1)
 		ch=pop(s);
 	
-	strrev(P);
+	reverse(P);
 	P[j]='\0';
-
+	
 	return P;
 }
 
 int main()
 {
-	char *exp="A+B*(C-D)+E";
+	char *exp="(A+B)";
 
 	printf("Prefix: %s\n",infix_to_prefix(exp));
 	return 0;

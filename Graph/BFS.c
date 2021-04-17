@@ -158,10 +158,10 @@ void BFS(struct Graph *G)
 
 	while(q->front!=-1)
 	{
-		print_queue(q);
+		//print_queue(q);
 		v=delete_queue(q);
 		G->status[v-1]=Processed;
-		printf("\nV%d\n",v);
+		printf("V%d ",v);
 
 		t=G->adj[v-1];
 		while(t!=NULL)
@@ -179,7 +179,7 @@ void BFS(struct Graph *G)
 int main()
 {
 	struct Graph *g;
-	g=create_graph(6,9);
+	g=create_graph(5,6);
 
 	BFS(g);
 	return 0;
