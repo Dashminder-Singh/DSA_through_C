@@ -1,44 +1,52 @@
 #include <stdio.h>
 
-void Merge(int A[], int l, int m, int u)
+void Merge(int arr[], int l, int mid, int u)
 {
-	int i,j,k, C[u+1];
-	i=l;
-	j=m+1;
+	int n1,n2;
+	n1=mid-l+1;
+	n2=u-mid;
+
+	int A[n1], B[n2];
+
+	for(int i=0; i<n1; i++)
+	{
+		A[i]=arr[l+i];
+	}
+	for(int j=0; j<n2; j++)
+	{
+		B[j]=arr[mid+1+j];
+	}
+
+	int i, j,k;
+	i=j=0;
 	k=l;
 
-	while(i<=m && j<=u)
+	while(i<n1 && j<n2)
 	{
-		if(A[i]<A[j])
+		if(A[i]<B[j])
 		{
-			C[k]=A[i];
-			k++; 
+			arr[k]=A[i];
 			i++;
+			k++;
 		}
 		else
 		{
-			C[k]=A[j];
-			k++;
+			arr[k]=B[j];
 			j++;
+			k++;
 		}
 	}
-
-	while(i<=m)
+	while(i<n1)
 	{
-		C[k]=A[i];
-		k++; 
+		arr[k]=A[i];
 		i++;
+		k++;
 	}
-	while(j<=u)
+	while(j<n2)
 	{
-		C[k]=A[j];
-		k++; 
+		arr[k]=B[j];
 		j++;
-	}
-
-	for(int s=l; s<=u; s++)
-	{
-		A[s]=C[s];
+		k++;
 	}
 }
 
@@ -47,9 +55,13 @@ void Merge_sort(int arr[], int l, int u)
 	int mid;
 	mid=(l+u)/2;
 	if(l<mid)
-		Merge_sort(arr,l,mid);
+	{
+		Merge_sort(arr,l, mid);
+	}
 	if(mid+1<u)
-		Merge_sort(arr,mid+1,u);
+	{
+		Merge_sort(arr, mid+1, u);
+	}
 	Merge(arr,l,mid,u);
 }
 
@@ -67,6 +79,5 @@ int main()
 
 	Merge_sort(arr,0,14);
 	display(arr,15);
-	printf("\n");
 	return 0;
 }
